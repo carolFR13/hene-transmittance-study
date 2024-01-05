@@ -1,0 +1,28 @@
+# Virtual environment
+*venv*
+
+# macOS stuff
+.DS_Store
+
+# Cache files
+*cache*
+*.bkp
+*.dtmp
+*.ipynb_checkpoints
+
+# Python package
+*egg-info*
+
+
+# Data files
+hene-analysis/sources/
+
+
+# User codes
+hene-analysis/user_codes/
+
+
+# Generated graphs
+*.png
+
+
