@@ -264,12 +264,12 @@ class Maximums:
                 self.T_max_index = index_1
 
 
-            v_1 = vector[index_1-10:index_1+10] ; angles_1 = angles[index_1-10:index_1+10]
+            v_1 = vector[index_1-5:index_1+5] ; angles_1 = angles[index_1-5:index_1+5]
 
             interp_parabolic_1 = interp1d(angles_1, v_1, kind='quadratic')
 
             # maximum: 
-            x_int_1 = np.linspace(angles[index_1-10],angles[index_1+9], 10000)
+            x_int_1 = np.linspace(angles[index_1-5],angles[index_1+4], 10000)
             v_int_1 = interp_parabolic_1(x_int_1)
 
 

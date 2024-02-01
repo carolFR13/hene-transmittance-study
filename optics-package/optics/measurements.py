@@ -2,6 +2,7 @@ import numpy as np
 import os
 import matplotlib.pyplot as plt
 from matplotlib.backends.backend_pdf import PdfPages
+from .analysis import Angles
 
 
 class Monochromatic:
@@ -327,7 +328,7 @@ class Monochromatic:
         return None
     
         
-    def _save_data(self):
+    def _save_data(self, int_angle : bool = False, alpha : float | None = None):
 
         self._adjust_data()
 
@@ -338,13 +339,32 @@ class Monochromatic:
             R_1 , b_1 = self.adjusted_data[key_1]['R']['1']
             R_2 , b_2 = self.adjusted_data[key_1]['R']['2']
 
-            name = key_1 + '_adjusted_1.txt'
-            data = np.stack((T_1, a_1 , R_2, b_2), axis=-1)
-            np.savetxt(name, data, fmt='%e', delimiter='\t')
+            if int_angle:
+                name = key_1 + '_adjusted_1.txt'
+                int_angle_1 = Angles(alpha = alpha, wavelength = 0.6328, theta_ext = a_1).int_angle() # [rad]
+                int_angle_2 = Angles(alpha = alpha, wavelength = 0.6328, theta_ext = b_2).int_angle() # [rad]
+                data = np.stack((T_1, a_1, int_angle_1 , R_2, b_2, int_angle_2), axis=-1)
+                header = 'P_{T,1}    theta_{ext,1}    theta_{int,1}    P_{R,2}   theta_{ext,2}  theta_{int,2}       alpha = %2.5f' % (alpha*180/np.pi)
+                np.savetxt(name, data, fmt='%e', delimiter='\t', header=header)
 
-            name_2 = key_1 + '_adjusted_2.txt'
-            data_2 = np.stack((T_2, a_2 , R_1, b_1), axis=-1)
-            np.savetxt(name_2, data_2, fmt='%e', delimiter='\t')
+                name_2 = key_1 + '_adjusted_2.txt'
+                int_angle_1_ = Angles(alpha = alpha, wavelength = 0.6328, theta_ext = a_2).int_angle() # [rad]
+                int_angle_2_ = Angles(alpha = alpha, wavelength = 0.6328, theta_ext = b_1).int_angle() # [rad]
+                data_2 = np.stack((T_2, a_2, int_angle_1_ , R_1, b_1, int_angle_2_), axis=-1)
+                header_2 = 'P_{T,2}    theta_{ext,2}    theta_{int,2}    P_{R,1}   theta_{ext,1}  theta_{int,1}       alpha = %2.5f' % (alpha*180/np.pi)
+                np.savetxt(name_2, data_2, fmt='%e', delimiter='\t', header=header_2)
+
+
+            else:
+                name = key_1 + '_adjusted_1.txt'
+                data = np.stack((T_1, a_1 , R_2, b_2), axis=-1)
+                header = 'P_{T,1}    theta_1    P_{R,2}   theta_2'
+                np.savetxt(name, data, fmt='%e', delimiter='\t', header=header)
+
+                name_2 = key_1 + '_adjusted_2.txt'
+                data_2 = np.stack((T_2, a_2 , R_1, b_1), axis=-1)
+                header_2 = 'P_{T,2}    theta_2    P_{R,1}   theta_1'
+                np.savetxt(name_2, data_2, fmt='%e', delimiter='\t', header=header_2)
 
         return None
 

@@ -74,13 +74,13 @@ class Index:
     def get_delimited_index(self, value, index):
 
         total_vector = self.vector
-        delimited_vector = total_vector[index-10 : index + 10]
+        delimited_vector = total_vector[index-15 : index + 15]
 
         absolute_diff = np.abs(delimited_vector-value)
 
         index_1 = np.argmin(absolute_diff)
 
-        final_index = index - 10 + index_1
+        final_index = index - 15 + index_1
 
         return final_index
 
