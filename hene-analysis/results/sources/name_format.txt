@@ -1,0 +1,25 @@
+
+FILES NAME FORMAT 
+
+medium_thickness_polarization_order
+
+
+_medium_
+
+a : air
+b : water
+
+_thickness_
+
+r : pressure made by Raúl
+a : pressure made by Alejandro
+
+_polarization_
+
+TE (279°)
+TM (324°)
+
+_order_
+
+1 : T -> S120UV ; R -> S121B
+2 : T -> S121B ; R -> S120UV

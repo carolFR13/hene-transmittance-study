@@ -1,0 +1,31 @@
+	
+2023-09-22
+
+	set1 : a_a (1)
+The step was changed in TM measurements, we don't have the same length in all the measurements and we can't compute k1/k2.
+
+
+2023-09-29
+
+	set1 : a_a (2)
+	set2 : a_r (1)
+	set3 : b_r (1)
+	set4 : b_a (1)
+
+2023-10-06
+
+	set1 : Total reflexion, without being frustrated.
+
+2023-10-10
+
+	set1 : a_r (2)
+	set2 : b_r (2) 
+	set3 : b_r (3) 
+Incident point changed in order to be in the center of the prism. 
+	set4 : b_r (4)
+Adding more water.
+	set5 : b_r (5)
+Incident point changed in order to be again in the right side (as in set2).
+	set6 : Variation with incident point location.
+
+
