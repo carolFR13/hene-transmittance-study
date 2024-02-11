@@ -178,20 +178,24 @@ class Monochromatic:
             for key_2, _ in dict.items():
                 for key_3 in ('1','2'):
 
-                    vector = list(self.measured_data[key][key_2][key_3])
-                    init_value, init_angle, end_value, end_angle = self.values[key][key_2][key_3]
+                    try:
+                        vector = list(self.measured_data[key][key_2][key_3])
+                        init_value, init_angle, end_value, end_angle = self.values[key][key_2][key_3]
 
-                    index_1 = vector.index(float(init_value))
-                    index_2 = vector.index(float(end_value))
-                    vector_n = vector[index_1:index_2]
-                    # print(key, key_2, key_3, '      ',len(vector_n))
+                        index_1 = vector.index(float(init_value))
+                        index_2 = vector.index(float(end_value))
+                        vector_n = vector[index_1:index_2]
+                        print(key, key_2, key_3, '      ',len(vector_n))
 
-                    angles = np.linspace(float(init_angle),float(end_angle),len(vector_n))
+                        angles = np.linspace(float(init_angle),float(end_angle),len(vector_n))
 
-                    if key not in self.adjusted_data:
-                        self.adjusted_data[key] = {'T': {}, 'R': {}}
+                        if key not in self.adjusted_data:
+                            self.adjusted_data[key] = {'T': {}, 'R': {}}
 
-                    self.adjusted_data[key][key_2][key_3] = (np.array(vector_n), np.array(angles))
+                        self.adjusted_data[key][key_2][key_3] = (np.array(vector_n), np.array(angles))
+
+                    except Exception:
+                        pass
 
         return None
 
@@ -221,7 +225,7 @@ class Monochromatic:
 
                 self.constants[key_1] = k1_k2 
 
-        except ValueError:
+        except Exception:
             print('Meassurements do not have the same number of elements for', str(key_1))
 
         return None
@@ -239,28 +243,33 @@ class Monochromatic:
 
         for key_1, _  in self.adjusted_data.items():
 
-            T_1 , a_1 = self.adjusted_data[key_1]['T']['1']
-            T_2 , a_2 = self.adjusted_data[key_1]['T']['2']
-            R_1 , b_1 = self.adjusted_data[key_1]['R']['1']
-            R_2 , b_2 = self.adjusted_data[key_1]['R']['2']
+            try:
 
-            k1_k2 = self.constants[key_1]
+                T_1 , a_1 = self.adjusted_data[key_1]['T']['1']
+                T_2 , a_2 = self.adjusted_data[key_1]['T']['2']
+                R_1 , b_1 = self.adjusted_data[key_1]['R']['1']
+                R_2 , b_2 = self.adjusted_data[key_1]['R']['2']
 
-            # since we can't remove both constants, we set all the data to be
-            # multiplied by k_1
+                k1_k2 = self.constants[key_1]
 
-            T_1_n = T_1 
-            T_2_n = T_2 * k1_k2
-            R_1_n = R_1 
-            R_2_n = R_2 * k1_k2
+                # since we can't remove both constants, we set all the data to be
+                # multiplied by k_1
 
-            if key_1 not in self.corrected_data:
-                self.corrected_data[key_1] = {'T': {}, 'R': {}}
+                T_1_n = T_1 
+                T_2_n = T_2 * k1_k2
+                R_1_n = R_1 
+                R_2_n = R_2 * k1_k2
 
-            self.corrected_data[key_1]['T']['1'] = T_1_n , a_1
-            self.corrected_data[key_1]['R']['2'] = R_2_n , b_2
-            self.corrected_data[key_1]['T']['2'] = T_2_n , a_2
-            self.corrected_data[key_1]['R']['1'] = R_1_n , b_1
+                if key_1 not in self.corrected_data:
+                    self.corrected_data[key_1] = {'T': {}, 'R': {}}
+
+                self.corrected_data[key_1]['T']['1'] = T_1_n , a_1
+                self.corrected_data[key_1]['R']['2'] = R_2_n , b_2
+                self.corrected_data[key_1]['T']['2'] = T_2_n , a_2
+                self.corrected_data[key_1]['R']['1'] = R_1_n , b_1
+
+            except Exception:
+                pass
 
         return None
 
@@ -371,33 +380,38 @@ class Monochromatic:
 
 def report(folder_path, file, limit):
 
-    obj = Monochromatic(folder_path)
-    obj._adjust_data()
-    obj._get_constants()
-    obj._corrected_values()
-    obj._get_transmittance()
+    try:    
+        obj = Monochromatic(folder_path)
+        obj._adjust_data()
+        obj._get_constants()
+        obj._corrected_values()
+        obj._get_transmittance()
+    except Exception:
+        pass
 
     with PdfPages(file) as pdf:
 
         for key, _ in obj.adjusted_data.items():
             for key2 in ['T', 'R']:
-                matrix = []
-                K1_K2 = np.array(obj.constants[key][:limit])
-                P_1 = np.array(obj.adjusted_data[key][key2]['1'][0][:limit])
-                P_1_n = np.array(obj.corrected_data[key][key2]['1'][0][:limit])
-                P_2 = np.array(obj.adjusted_data[key][key2]['2'][0][:limit])
-                P_2_n = np.array(obj.corrected_data[key][key2]['2'][0][:limit])
+                try:
+                    matrix = []
+                    K1_K2 = np.array(obj.constants[key][:limit])
+                    P_1 = np.array(obj.adjusted_data[key][key2]['1'][0][:limit])
+                    P_1_n = np.array(obj.corrected_data[key][key2]['1'][0][:limit])
+                    P_2 = np.array(obj.adjusted_data[key][key2]['2'][0][:limit])
+                    P_2_n = np.array(obj.corrected_data[key][key2]['2'][0][:limit])
 
-                if key2 == 'T':
-                    T_1 = np.array(obj.data[key][key2]['1'][0][:limit])
-                    T_2 = np.array(obj.data[key][key2]['2'][0][:limit])
-                    col_head = [r'$K_1/K_2$',r'$P_{T,1}$',r'$P^c_{T,1}$', r'$T_1$',r'$P_{T,2}$', r'$P^c_{T,2}$', r'$T_2$']
+                    if key2 == 'T':
+                        T_1 = np.array(obj.data[key][key2]['1'][0][:limit])
+                        T_2 = np.array(obj.data[key][key2]['2'][0][:limit])
+                        col_head = [r'$K_1/K_2$',r'$P_{T,1}$',r'$P^c_{T,1}$', r'$T_1$',r'$P_{T,2}$', r'$P^c_{T,2}$', r'$T_2$']
 
-                else:
-                    T_1 = np.array(obj.data[key][key2]['2'][0][:limit])
-                    T_2 = np.array(obj.data[key][key2]['1'][0][:limit])
-                    col_head = [r'$K_1/K_2$',r'$P_{R,1}$',r'$P^c_{R,1}$', r'$R_1$',r'$P_{R,2}$',r'$P^c_{R,2}$', r'$R_2$']
-
+                    else:
+                        T_1 = np.array(obj.data[key][key2]['2'][0][:limit])
+                        T_2 = np.array(obj.data[key][key2]['1'][0][:limit])
+                        col_head = [r'$K_1/K_2$',r'$P_{R,1}$',r'$P^c_{R,1}$', r'$R_1$',r'$P_{R,2}$',r'$P^c_{R,2}$', r'$R_2$']
+                except Exception:
+                    break
                 
                 matrix.append([K1_K2, P_1, P_1_n, T_1, P_2, P_2_n, T_2])
                 matrix = np.array(matrix[0])
@@ -421,73 +435,100 @@ def report(folder_path, file, limit):
                 pdf.savefig(fig)
                 plt.close()
             
+            try:
 
-            # Reflected power plot
-            plt.figure()
-            P_R_1 , angle_1 = obj.adjusted_data[key]['R']['1']
-            P_R_2 , angle_2 = obj.adjusted_data[key]['R']['2']
-            P_R_1_c , angle_1 = obj.corrected_data[key]['R']['1']
-            P_R_2_c , angle_2 = obj.corrected_data[key]['R']['2']
-            plt.title('Reflected power for '+key+' file')
-            plt.grid(alpha=0.7)
-            plt.plot(angle_1,P_R_1,label=r'$P_{R,1}$')
-            plt.plot(angle_2,P_R_2,label=r'$P_{R,2}$')
-            plt.plot(angle_1,P_R_1_c,label=r'$P^c_{R,1}$')
-            plt.plot(angle_2,P_R_2_c,label=r'$P^c_{R,2}$')
-            plt.legend(loc='best')
-            plt.ylim(-0.0001,0.0025)
-            plt.xlabel(r'$\theta$(°)')
-            plt.ylabel(r'$P_R$')
-            pdf.savefig()
-            plt.close()
+                P_R_1 , angle_1 = obj.adjusted_data[key]['R']['1']
+                P_R_2 , angle_2 = obj.adjusted_data[key]['R']['2']
+                P_R_1_c , angle_1 = obj.corrected_data[key]['R']['1']
+                P_R_2_c , angle_2 = obj.corrected_data[key]['R']['2']
+                P_T_1 , angle_1 = obj.adjusted_data[key]['T']['1']
+                P_T_2 , angle_2 = obj.adjusted_data[key]['T']['2']
+                P_T_1_c , angle_1 = obj.corrected_data[key]['T']['1']
+                P_T_2_c , angle_2 = obj.corrected_data[key]['T']['2']
 
-            # Reflectance plot
-            plt.figure()
-            R_1 , angle_1 = obj.data[key]['R']['1']
-            R_2 , angle_2 = obj.data[key]['R']['2']
-            plt.title('Reflectance for '+key+' file')
-            plt.grid(alpha=0.7)
-            plt.plot(angle_1,R_1,'.',label='1st measurement')
-            plt.plot(angle_2,R_2,'.',label='2nd measurement')
-            plt.legend(loc='best')
-            plt.xlabel(r'$\theta$(°)')
-            plt.ylabel('R')
-            pdf.savefig()
-            plt.close()
+                # Trasmitted+reflected power
+                
+                plt.figure()
+                plt.title('Trasmitted and reflected power without constant correction for '+key+' file')
+                plt.grid(alpha=0.7)
+                plt.plot(angle_1,P_R_1,label=r'$P_{R,1}$')
+                plt.plot(angle_2,P_R_2,label=r'$P_{R,2}$')
+                #plt.plot(angle_1,P_R_1_c,label=r'$P^c_{R,1}$')
+                #plt.plot(angle_2,P_R_2_c,label=r'$P^c_{R,2}$')
+                plt.plot(angle_1,P_T_1,label=r'$P_{T,1}$')
+                plt.plot(angle_2,P_T_2,label=r'$P_{T,2}$')
+                #plt.plot(angle_1,P_T_1_c,label=r'$P^c_{T,1}$')
+                #plt.plot(angle_2,P_T_2_c,label=r'$P^c_{T,2}$')
+                plt.legend(loc='best')
+                #plt.ylim(-0.0001,0.0025)
+                plt.xlabel(r'$\theta$(°)')
+                plt.ylabel(r'$P_{R,T}$')
+                pdf.savefig()
+                plt.close()
 
-            # Transmitted power plot
-            plt.figure()
-            P_T_1 , angle_1 = obj.adjusted_data[key]['T']['1']
-            P_T_2 , angle_2 = obj.adjusted_data[key]['T']['2']
-            P_T_1_c , angle_1 = obj.corrected_data[key]['T']['1']
-            P_T_2_c , angle_2 = obj.corrected_data[key]['T']['2']
-            plt.title('Trasmitted power for '+key+' file')
-            plt.grid(alpha=0.7)
-            plt.ylim(-0.0001,0.0025)
-            plt.plot(angle_1,P_T_1,label=r'$P_{T,1}$')
-            plt.plot(angle_2,P_T_2,label=r'$P_{T,2}$')
-            plt.plot(angle_1,P_T_1_c,label=r'$P^c_{T,1}$')
-            plt.plot(angle_2,P_T_2_c,label=r'$P^c_{T,2}$')
-            plt.legend(loc='best')
-            
-            plt.xlabel(r'$\theta$(°)')
-            plt.ylabel(r'$P_T$')
-            pdf.savefig()
-            plt.close()
+                # Reflected power plot
+                plt.figure()
+                plt.title('Reflected power for '+key+' file')
+                plt.grid(alpha=0.7)
+                plt.plot(angle_1,P_R_1,label=r'$P_{R,1}$')
+                plt.plot(angle_2,P_R_2,label=r'$P_{R,2}$')
+                plt.plot(angle_1,P_R_1_c,label=r'$P^c_{R,1}$')
+                plt.plot(angle_2,P_R_2_c,label=r'$P^c_{R,2}$')
+                plt.legend(loc='best')
+                #plt.ylim(-0.0001,0.00150)
+                plt.xlabel(r'$\theta$(°)')
+                plt.ylabel(r'$P_R$')
+                pdf.savefig()
+                plt.close()
 
-            # Transmitance plot
-            plt.figure()
-            T_1 , angle_1 = obj.data[key]['T']['1']
-            T_2 , angle_2 = obj.data[key]['T']['2']
-            plt.title('Transmitance for '+key+' file')
-            plt.grid(alpha=0.7)
-            plt.plot(angle_1,T_1,'.',label='1st measurement')
-            plt.plot(angle_2,T_2,'.',label='2nd measurement')
-            plt.legend(loc='best')
-            plt.xlabel(r'$\theta$(°)')
-            plt.ylabel('T')
-            pdf.savefig()
-            plt.close()
+                # Transmitted power plot
+                plt.figure()
+                plt.title('Trasmitted power for '+key+' file')
+                plt.grid(alpha=0.7)
+                #plt.ylim(-0.00005,0.00045)
+                #plt.ylim(-0.00001,0.0001)
+                plt.plot(angle_1,P_T_1,label=r'$P_{T,1}$')
+                plt.plot(angle_2,P_T_2,label=r'$P_{T,2}$')
+                plt.plot(angle_1,P_T_1_c,label=r'$P^c_{T,1}$')
+                plt.plot(angle_2,P_T_2_c,label=r'$P^c_{T,2}$')
+                plt.legend(loc='best')
+                
+                plt.xlabel(r'$\theta$(°)')
+                plt.ylabel(r'$P_T$')
+                pdf.savefig()
+                plt.close()
+
+                # Reflectance plot
+                plt.figure()
+                R_1 , angle_1 = obj.data[key]['R']['1']
+                R_2 , angle_2 = obj.data[key]['R']['2']
+                plt.title('Reflectance for '+key+' file')
+                plt.grid(alpha=0.7)
+                plt.plot(angle_1,R_1,'.',label='1st measurement')
+                plt.plot(angle_2,R_2,'.',label='2nd measurement')
+                plt.legend(loc='best')
+                #plt.ylim(0.9,1.005)
+                plt.xlabel(r'$\theta$(°)')
+                plt.ylabel('R')
+                pdf.savefig()
+                plt.close()
+
+                # Transmitance plot
+                plt.figure()
+                T_1 , angle_1 = obj.data[key]['T']['1']
+                T_2 , angle_2 = obj.data[key]['T']['2']
+                plt.title('Transmitance for '+key+' file')
+                plt.grid(alpha=0.7)
+                plt.plot(angle_1,T_1,'.',label='1st measurement')
+                plt.plot(angle_2,T_2,'.',label='2nd measurement')
+                plt.legend(loc='best')
+                #plt.ylim(-0.001,0.1)
+                plt.xlabel(r'$\theta$(°)')
+                plt.ylabel('T')
+                pdf.savefig()
+                plt.close()
+            except Exception:
+                break
 
     return None
 

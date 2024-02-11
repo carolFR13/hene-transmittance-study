@@ -14,18 +14,65 @@ The step was changed in TM measurements, we don't have the same length in all th
 
 2023-10-06
 
-	set1 : Total reflexion, without being frustrated.
+	set1 : Total reflection, without being frustrated.
 
 2023-10-10
-
+	
+	set0 : Variation of the transmitted power with respect to the location of the incident beam.
 	set1 : a_r (2)
 	set2 : b_r (2) 
 	set3 : b_r (3) 
-Incident point changed in order to be in the center of the prism. 
+Incident point changed to be in the center of the prism. 
 	set4 : b_r (4)
 Adding more water.
 	set5 : b_r (5)
-Incident point changed in order to be again in the right side (as in set2).
-	set6 : Variation with incident point location.
+Incident point changed to be again in the right side (as in set2).
+	set6 : ab_r 
+Measurement with half of the water evaporated, to check where the TR is after the water is evaporated.
+
+
+
+!!! From now on we will work with prisms coated with gold.
+
+2023-11-16 
+
+	set1 : Total reflexion 
+For some reason the TM files don't have the same number of points recorded, even though the initial and final point is the same, with the same step length and velocity...
+
+2023-11-23
+
+	set1 : Total reflexion
+Video for R_T_TM_2 lost, so no adjustment can be made sorry :(
+	set2 : a_a (1)
+	set3 : a_a (2)
+In this case the thickness was such that we could see maximums outside the FTIR range.
+	set4 : a_a (3)
+For this set we didn't see the maximums but we found a coupling for the plasmon in the transmitted power.
+	
+	We took 3 more measurements (only TM file for one positioning) trying to find either situation described above but we found nothing.
+
+2023-11-28
+
+	set1 : a_a (4)
+We look for a thickness to measure maximums outside the FTIR range so we can insert water.
+	set2 : b_a (1)
+We insert water in the gap.
+	set3 : b_a (2)
+Repeating the measurements with a wider range.
+
+	We took 1 more measurement with water and 1 with air, without obtaining better results than the ones we already had.
+
+2023-12-04
+
+	set1 : Total reflexion
+	set2 : a_a (5) only TM
+	set3 : a_a (6) only TM 
+	set4 : b_a (3) only TM
+There is a difference between the files of 20 points, it is not possible to compute the constant correction
+	set5 : ab_a (1)
+Measurement when part of the previously inserted water is evaporated.
+
+
+
 
 
