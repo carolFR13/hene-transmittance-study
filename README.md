@@ -14,9 +14,9 @@ was performed with the 2 possible configurations of the detectors ( 1 : 1st dete
 
 The optics package provided here can be installed by following the steps below:
 
-1. Clone this repository on your computer
+1. Clone this repository on your computer:
 > git clone https://github.com/carolFR13/hene-transmission-study.git
-2. From the new directory install the package from the terminal 
+2. Go to the optical-package directory and install the package from the terminal:
 > pip install -e .
 
 Once installed, you can do the following: 
